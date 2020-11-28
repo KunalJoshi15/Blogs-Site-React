@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom'
 import axios from 'axios'
 import './NewPost.css';
 
@@ -6,7 +7,8 @@ class NewPost extends Component {
     state = {
         title: '',
         content: '',
-        author: 'Kunal'
+        author: 'Kunal',
+        submitted: false
     }
     postDataHandler = ()=>{
         const post = {
@@ -18,11 +20,22 @@ class NewPost extends Component {
             .then(response=>{
                 // This data could be easily sent to the server as required.
                 console.log(response.data);
+                this.props.history.push("/posts");
+                // this.props.history.replace("/posts")
+                // The replace one works same as the this.setState one.
+                // this.setState({submitted:true});
             })
     }
     render () {
+        let redirect = null
+        if(this.state.submitted)
+        {
+            redirect = <Redirect to="/posts"/>
+        }
         return (
             <div className="NewPost">
+                {redirect}
+                {/* <Redirect to={this.state.submitted?'/posts':null}/> */}
                 <h1>Add a Post</h1>
                 <label>Title</label>
                 <input type="text" value={this.state.title} onChange={(event) => this.setState({title: event.target.value})} />
@@ -33,7 +46,7 @@ class NewPost extends Component {
                     <option value="Kunal">Kunal</option>
                     <option value="Puneet">Puneet</option>
                 </select>
-                <button>Add Post</button>
+                <button onClick={this.postDataHandler}>Add Post</button>
             </div>
         );
     }

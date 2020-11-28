@@ -7,14 +7,21 @@ class FullPost extends Component {
         loadedPost: null
     }
 
-    componentDidUpdate(){
-        if(this.props.id){
-            if(!this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id!==this.props.id)){
+    componentDidMount(){
+        this.loadData();
+    }
+
+    componentDidUpdate() {
+        this.loadData();
+    }
+    loadData(){
+        if(this.props.match.params.id){
+            if(!this.state.loadedPost || (this.state.loadedPost && this.state.loadedPost.id!==+this.props.match.params.id)){
             // console.log(this.props.id)
-             axios.get('https://jsonplaceholder.typicode.com/posts/'+this.props.id)
+            // The + is used over here because the first one is number while the other one is string.
+             axios.get('https://jsonplaceholder.typicode.com/posts/'+this.props.match.params.id)
                 .then(response=>{
                     this.setState({loadedPost:response.data})
-                    console.log(response.data)
                 })
                 .catch(error=>{
                     this.setState({})
@@ -23,11 +30,12 @@ class FullPost extends Component {
         }
     }
     deletePostHandler = ()=>{
-        axios.delete('https://jsonplaceholder.typicode.com/posts/'+this.props.id)
+        axios.delete('https://jsonplaceholder.typicode.com/posts/'+this.props.match.params.id)
             .then(response=>{
                 console.log(response);
             })
     }
+    // In case of nested routes everywhere the this.props.match.params.id is used.
     // This will delete the data easilt.
 
     render () {
